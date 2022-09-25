@@ -2,7 +2,6 @@
 
 set -e
 
-#terraform apply 1>/dev/null
 ip=$(terraform output -json | jq .ec2_public_ip.value | tr -d '"')
 
 sed -iE "

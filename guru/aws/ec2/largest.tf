@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-west-2"
-}
-
 resource "aws_instance" "api" {
   provisioner "remote-exec" {
     inline = [
@@ -37,23 +24,10 @@ resource "aws_instance" "api" {
     }
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo chown someuser:someuser /home/someuser/.ssh/authorized_keys",
-      "sudo chmod 0600 /home/someuser/.ssh/authorized_keys"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = "${file("yourkey.pem")}"
-    }
-  }
-
-  ami = "ami-08970fb2e5767e3b8"
-  instance_type = "t2.micro"
+  ami = "ami-017fecd1353bcc96e"
+  instance_type = "t3.medium"
 
   tags = {
-    Name = "HelloWorld"
+    Name = "guruec2"
   }
 }

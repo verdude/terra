@@ -5,11 +5,11 @@ plan:
 .PHONY: apply
 apply:
 	terraform apply
-	$(MAKE) saveip
+	$(MAKE) config_ssh
 
-.PHONY: saveip
-saveip:
-	bash saveip.sh
+.PHONY: config_ssh
+config_ssh:
+	bash scripts/config_ssh.sh
 
 .PHONY: clean
 clean:

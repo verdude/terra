@@ -10,3 +10,5 @@ sed -riE "
   s/(HostName).*$/\1 ${ip}/
 }
 " ~/.ssh/config
+
+ls -1 ~/.ssh/*.pub | xargs echo#ssh-copy-id -i 

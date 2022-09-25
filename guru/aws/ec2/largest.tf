@@ -1,33 +1,35 @@
-resource "aws_instance" "api" {
-  provisioner "remote-exec" {
-    inline = [
-      "sudo useradd -m erra",
-      "sudo usermod -aG wheel erra",
-      "echo %wheel ALL=(ALL) ALL | sudo tee -a /etc/sudoers"
-    ]
+variable "vpc_sec_gids" {
+  description = "The VPC Security Group ids for the ec2 instance."
+  type = list(number)
+  nullable = false
+}
 
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = "${file("yourkey.pem")}"
-    }
-  }
+variable "key_name" {
+  description = "The name of an aws key pair to authorize."
+  nullable = false
+  type = string
+}
 
-  provisioner "file" {
-    source      = "authorized_keys"
-    destination = "/home/erra/.ssh/authorized_keys"
+variable "ami" {
+  description = "The ec2 ami."
+  type = string
+  nullable = false
 
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = "${file("yourkey.pem")}"
-    }
-  }
+  default = "ami-017fecd1353bcc96e"
+}
 
-  ami = "ami-017fecd1353bcc96e"
-  instance_type = "t3.medium"
+variable "size" {
+  description = "Instance type. default: t3.medium"
+  nullable = false
+  type = string
 
-  tags = {
-    Name = "guruec2"
-  }
+  default = "t3.medium"
+}
+
+resource "aws_instance" "largest-guru-ec2" {
+  ami = var.ami
+  instance_type = var.size
+  key_name = var.key_name
+
+  vpc_security_group_ids = var.vpc_sec_gids
 }

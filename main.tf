@@ -11,42 +11,6 @@ provider "aws" {
   region = "us-west-2"
 }
 
-variable "key_name" {
-  type = string
-  default = "erra"
-}
-
-resource "aws_security_group" "allow_all" {
-  name        = "allow all"
-  description = "allow all"
-
-  ingress {
-    description = "all"
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = {
-    Name = "allow_all"
-  }
-}
-
-resource "aws_key_pair" "authorized_key" {
-  key_name = var.key_name
-  public_key = file("/home/erra/.ssh/id_ed25519.pub")
-}
-
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -63,18 +27,25 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "api" {
-  ami = data.aws_ami.ubuntu.id
-  instance_type = var.size
-  key_name = aws_key_pair.authorized_key.key_name
-
-  vpc_security_group_ids = [aws_security_group.allow_all.id]
-
-  tags = {
-    Name = "api"
-  }
+// resources
+module "vpc" {
+  source = "./sec_groups/allow_all"
 }
 
+module "key" {
+  source = "./keys/key_pair"
+}
+
+module "ec2" {
+  source = "./guru/aws/ec2/largest"
+
+  vpc_sec_gids = [module.vpc.aws_security_group.allow_all.id]
+  key_name = module.key.key_name
+  ami = data.aws_ami.ubuntu.id
+  size = "t3.medium"
+}
+
+// outputs
 output "arn" {
   value = aws_instance.api.arn
 }

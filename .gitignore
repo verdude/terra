@@ -1,0 +1,8 @@
+*.o
+.\#*
+.terraform*
+.terraform/
+\#*\#
+assets/
+build/
+terraform.tfstate*

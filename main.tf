@@ -1,16 +1,3 @@
-teerraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-west-2"
-}
-
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -29,35 +16,26 @@ data "aws_ami" "ubuntu" {
 
 // resources
 module "vpc" {
-  source = "./sec_groups/allow_all"
+  source = "./vpc/main"
 }
 
-module "key" {
-  source = "./keys/key_pair"
+module "sec_groups" {
+  source = "./sec_groups"
+  vpc_id = module.vpc.vpc_id
+}
+
+module "keys" {
+  source = "./keys"
 }
 
 module "ec2" {
-  source = "./guru/aws/ec2/largest"
+  source = "./guru/aws/ec2"
 
-  vpc_sec_gids = [module.vpc.aws_security_group.allow_all.id]
-  key_name = module.key.key_name
+  vpc_sec_gids = module.sec_groups.sec_group_ids
+  key_name = module.keys.key_name
   ami = data.aws_ami.ubuntu.id
+  vpc_id = module.vpc.vpc_id
+  subnet_id = module.vpc.p_subnet_id
+  igw = module.vpc.igw
   size = "t3.medium"
-}
-
-// outputs
-output "arn" {
-  value = aws_instance.api.arn
-}
-
-output "instance_state" {
-  value = aws_instance.api.instance_state
-}
-
-output "pw" {
-  value = aws_instance.api.password_data
-}
-
-output "public_ip" {
-  value = aws_instance.api.public_ip
 }

@@ -1,6 +1,13 @@
+variable "vpc_id" {
+  description = "vpc for the security group"
+  type = string
+  nullable = false
+}
+
 resource "aws_security_group" "allow_all" {
   name        = "allow all"
   description = "allow all"
+  vpc_id = var.vpc_id
 
   ingress {
     description = "all"
@@ -24,3 +31,6 @@ resource "aws_security_group" "allow_all" {
   }
 }
 
+output "sec_group_ids" {
+  value = [aws_security_group.allow_all.id]
+}

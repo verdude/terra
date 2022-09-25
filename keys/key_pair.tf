@@ -13,3 +13,7 @@ resource "aws_key_pair" "authorized_key" {
   key_name = var.key_name
   public_key = file(var.pubkey_file)
 }
+
+output "key_name" {
+  value = var.key_name
+}

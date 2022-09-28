@@ -7,7 +7,7 @@ _wait=""
 while getopts w flag
 do
   case ${flag} in
-    w) _wait="";;
+    w) _wait="true";;
   esac
 done
 
@@ -20,7 +20,7 @@ sed -Eri "
 }
 " ~/.ssh/config
 
-if [[ -z "$wait" ]]; then
+if [[ -n "$_wait" ]]; then
   echo "waiting a bit..."
   sleep 10
 fi

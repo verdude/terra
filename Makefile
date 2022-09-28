@@ -9,7 +9,7 @@ apply:
 
 .PHONY: config_ssh
 config_ssh:
-	bash scripts/config_ssh.sh
+	bash scripts/config_ssh.sh -w
 
 .PHONY: clean
 clean:

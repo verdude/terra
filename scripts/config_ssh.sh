@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
+
+_wait=""
+
+while getopts w flag
+do
+  case ${flag} in
+    w) _wait="";;
+  esac
+done
 
 ip=$(terraform output -json | jq .ec2_public_ip.value | tr -d '"')
 
@@ -10,5 +19,10 @@ sed -Eri "
   s/(HostName).*$/\1 ${ip}/
 }
 " ~/.ssh/config
+
+if [[ -z "$wait" ]]; then
+  echo "waiting a bit..."
+  sleep 10
+fi
 
 ls -1 ~/.ssh/*.pub | xargs -I{} ssh-copy-id -fi {} guru

@@ -1,15 +1,16 @@
+p := ec2
+
 .PHONY: plan
 plan:
-	terraform plan -out terraform-plan.txt
+	$(MAKE) -C p/$(p) plan p=$(p)
 
 .PHONY: apply
 apply:
-	terraform apply
-	$(MAKE) config_ssh
+	$(MAKE) -C p/$(p) apply $(p)
 
-.PHONY: config_ssh
-config_ssh:
-	bash scripts/config_ssh.sh -w
+.PHONY: lambda
+lambda:
+	$(MAKE) -C p/$(p) apply $(p)
 
 .PHONY: clean
 clean:

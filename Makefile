@@ -6,11 +6,11 @@ plan:
 
 .PHONY: apply
 apply:
-	$(MAKE) -C p/$(p) apply $(p)
+	$(MAKE) -C p/$(p) apply p=$(p)
 
 .PHONY: lambda
 lambda:
-	$(MAKE) -C p/$(p) apply $(p)
+	$(MAKE) -C p/$(p) apply p=$(p)
 
 .PHONY: clean
 clean:

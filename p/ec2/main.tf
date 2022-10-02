@@ -16,20 +16,20 @@ data "aws_ami" "ubuntu" {
 
 // resources
 module "vpc" {
-  source = "./vpc/main"
+  source = "../../vpc/main"
 }
 
 module "sec_groups" {
-  source = "./sec_groups"
+  source = "../../sec_groups"
   vpc_id = module.vpc.vpc_id
 }
 
 module "keys" {
-  source = "./keys"
+  source = "../../keys"
 }
 
 module "ec2" {
-  source = "./guru/aws/ec2"
+  source = "../../guru/aws/ec2"
 
   vpc_sec_gids = module.sec_groups.sec_group_ids
   key_name = module.keys.key_name

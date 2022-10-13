@@ -31,6 +31,11 @@ variable "instance_id" {
 }
 
 variable "port" {
+  description = "port on which the alb will run"
+  type = number
+}
+
+variable "target_port" {
   description = "port for service running on ec2"
   type = number
 }

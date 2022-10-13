@@ -48,7 +48,8 @@ module "alb" {
   subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
   vpc_id = module.vpc.vpc_id
   instance_id = module.ec2.id
-  port = 22884
+  target_port = 22884
+  port = 80
 }
 
 module "waf" {

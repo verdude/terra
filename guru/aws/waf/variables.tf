@@ -13,17 +13,22 @@ variable "resource_arn" {
   description = "arn of the target lb or other supported resource"
 }
 
+variable "target_id" {
+  type = string
+  description = "resource_arn resource id"
+}
+
 variable "managed_rule_groups" {
-  description = "Map of managed rule groups with settings"
+  description = "List of managed rule groups with settings"
   type = list(object({
     name = string
-    override_action = string
     priority = number
+    action = string
 
     statement = object({
       name = string
       vendor_name = optional(string, "AWS")
-      excluded_rule = optional(list(string))
+      excluded_rules = optional(set(string), [])
     })
   }))
 }

@@ -52,29 +52,31 @@ module "alb" {
 }
 
 module "waf" {
+  count = 0
   source = "../../guru/aws/waf"
 
   acl_name = "mybeautifulacl"
   region = "us-west-2"
   resource_arn = module.alb.lb_arn
+  target_id = module.alb.lb_id
 
   managed_rule_groups = [
     {
       name            = "CommonRules"
-      override_action = "block"
+      action = "block"
       priority        = 20
 
       statement = {
         name        = "AWSManagedRulesCommonRuleSet"
 
-        excluded_rule = [
+        excluded_rules = [
           "NoUserAgent_HEADER"
         ]
       }
     },
     {
       name = "BotRules"
-      override_action = "block"
+      action = "block"
       priority = 10
 
       statement = {
@@ -83,7 +85,7 @@ module "waf" {
     },
     {
       name = "SQLiRules"
-      override_action = "block"
+      action = "block"
       priority = 15
 
       statement = {

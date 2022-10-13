@@ -5,3 +5,7 @@ output "lb_dns_name" {
 output "lb_arn" {
   value = aws_lb.public_alb.arn
 }
+
+output "lb_id" {
+  value = aws_lb.public_alb.id
+}

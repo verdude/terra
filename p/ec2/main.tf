@@ -2,7 +2,7 @@ data "aws_ami" "ubuntu" {
   most_recent = true
 
   filter {
-    name   = "name"
+    name   = "jammy"
     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
@@ -16,20 +16,20 @@ data "aws_ami" "ubuntu" {
 
 // resources
 module "vpc" {
-  source = "../../vpc/main"
+  source = "../../aws/vpc/main"
 }
 
 module "sec_groups" {
-  source = "../../sec_groups"
+  source = "../../aws/sec_groups"
   vpc_id = module.vpc.vpc_id
 }
 
 module "keys" {
-  source = "../../keys"
+  source = "../../aws/keys"
 }
 
 module "ec2" {
-  source = "../../guru/aws/ec2"
+  source = "../../aws/ec2"
 
   vpc_sec_gids = module.sec_groups.sec_group_ids
   vpc_id = module.vpc.vpc_id
@@ -41,7 +41,7 @@ module "ec2" {
 }
 
 module "alb" {
-  source = "../../alb"
+  source = "../../aws/alb"
 
   name = "main-alb"
   sec_groups = module.sec_groups.sec_group_ids
@@ -53,8 +53,7 @@ module "alb" {
 }
 
 module "waf" {
-  count = 1
-  source = "../../guru/aws/waf"
+  source = "../../aws/waf"
 
   acl_name = "mybeautifulacl"
   region = "us-west-2"

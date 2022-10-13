@@ -20,10 +20,9 @@ variable "target_id" {
 
 variable "managed_rule_groups" {
   description = "List of managed rule groups with settings"
-  type = list(object({
-    name = string
+  type = map(object({
     priority = number
-    action = string
+    action = optional(string, "")
 
     statement = object({
       name = string
@@ -31,4 +30,6 @@ variable "managed_rule_groups" {
       excluded_rules = optional(set(string), [])
     })
   }))
+
+  default = {}
 }

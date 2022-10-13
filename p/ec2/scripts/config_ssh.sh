@@ -16,7 +16,7 @@ ip=$(terraform output -json | jq .ec2_public_ip.value | tr -d '"')
 sed -Eri "
 /# auto-ec2$/ {
   N
-  s/(HostName).*$/\1 ${ip}/
+  s/(HostName).*$/\1 ${ip}/g
 }
 " ~/.ssh/config
 
@@ -25,4 +25,4 @@ if [[ -n "$_wait" ]]; then
   sleep 10
 fi
 
-ls -1 ~/.ssh/*.pub | xargs -I{} ssh-copy-id -fi {} guru
+ls -1 ~/.ssh/*.pub | xargs -I{} ssh-copy-id -fi {} gurub

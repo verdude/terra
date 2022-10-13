@@ -18,5 +18,8 @@ clean:
 
 .PHONY: kill
 kill:
-	terraform destroy
-	rm -f terraform*
+	$(MAKE) -C p/$(p) kill p=$(p)
+
+.PHONY: clean
+clean:
+	$(MAKE) -C p/$(p) clean p=$(p)

@@ -3,7 +3,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
   filter {
@@ -32,10 +32,63 @@ module "ec2" {
   source = "../../guru/aws/ec2"
 
   vpc_sec_gids = module.sec_groups.sec_group_ids
+  vpc_id = module.vpc.vpc_id
   key_name = module.keys.key_name
   ami = data.aws_ami.ubuntu.id
-  vpc_id = module.vpc.vpc_id
   subnet_id = module.vpc.p_subnet_id
   igw = module.vpc.igw
   size = "t3.medium"
+}
+
+module "alb" {
+  source = "../../alb"
+
+  name = "main-alb"
+  sec_groups = module.sec_groups.sec_group_ids
+  subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
+  vpc_id = module.vpc.vpc_id
+  instance_id = module.ec2.id
+  port = 22884
+}
+
+module "waf" {
+  source = "../../guru/aws/waf"
+
+  acl_name = "mybeautifulacl"
+  region = "us-west-2"
+  resource_arn = module.alb.lb_arn
+
+  managed_rule_groups = [
+    {
+      name            = "CommonRules"
+      override_action = "block"
+      priority        = 20
+
+      statement = {
+        name        = "AWSManagedRulesCommonRuleSet"
+
+        excluded_rule = [
+          "NoUserAgent_HEADER"
+        ]
+      }
+    },
+    {
+      name = "BotRules"
+      override_action = "block"
+      priority = 10
+
+      statement = {
+        name = "AWSMAnagedRulesBotControlRuleSet"
+      }
+    },
+    {
+      name = "SQLiRules"
+      override_action = "block"
+      priority = 15
+
+      statement = {
+        name = "AWSManagedRulesSQLiRuleSet"
+      }
+    }
+  ]
 }

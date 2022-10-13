@@ -1,3 +1,17 @@
+variable "az" {
+  description = "availability zone for the subnet"
+  type = string
+
+  default = "us-west-2a"
+}
+
+variable "az2" {
+  description = "availability zone for the subnet"
+  type = string
+
+  default = "us-west-2b"
+}
+
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -8,6 +22,17 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
+  availability_zone = var.az
+
+  tags = {
+    Name = "Public Subnet"
+  }
+}
+
+resource "aws_subnet" "public2" {
+  vpc_id = aws_vpc.main.id
+  cidr_block = "10.0.2.0/24"
+  availability_zone = var.az2
 
   tags = {
     Name = "Public Subnet"
@@ -16,7 +41,7 @@ resource "aws_subnet" "public" {
 
 resource "aws_subnet" "private" {
   vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+  cidr_block = "10.0.3.0/24"
 
   tags = {
     Name = "Private Subnet"
@@ -59,4 +84,8 @@ output "vpc_id" {
 
 output "p_subnet_id" {
   value = aws_subnet.public.id
+}
+
+output "p2_subnet_id" {
+  value = aws_subnet.public2.id
 }

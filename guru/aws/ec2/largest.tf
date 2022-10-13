@@ -42,7 +42,7 @@ variable "igw" {
   description = "dependencies"
 }
 
-resource "aws_instance" "largest-guru-ec2" {
+resource "aws_instance" "default" {
   ami = var.ami
   instance_type = var.size
   key_name = var.key_name
@@ -55,17 +55,21 @@ resource "aws_instance" "largest-guru-ec2" {
 }
 
 output "arn" {
-  value = aws_instance.largest-guru-ec2.arn
+  value = aws_instance.default.arn
 }
 
 output "instance_state" {
-  value = aws_instance.largest-guru-ec2.instance_state
+  value = aws_instance.default.instance_state
 }
 
 output "pw" {
-  value = aws_instance.largest-guru-ec2.password_data
+  value = aws_instance.default.password_data
 }
 
 output "public_ip" {
-  value = aws_instance.largest-guru-ec2.public_ip
+  value = aws_instance.default.public_ip
+}
+
+output "id" {
+  value = aws_instance.default.id
 }

@@ -37,5 +37,36 @@ module "ec2" {
   ami = data.aws_ami.ubuntu.id
   subnet_id = module.vpc.p_subnet_id
   igw = module.vpc.igw
-  size = "t3.micro"
+  size = "t3.medium"
+}
+
+module "alb" {
+  source = "../../aws/alb"
+
+  name = "main-alb"
+  sec_groups = module.sec_groups.sec_group_ids
+  subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
+  vpc_id = module.vpc.vpc_id
+  instance_id = module.ec2.id
+  target_port = 22884
+  port = 80
+}
+
+module "waf" {
+  source = "../../aws/waf"
+
+  acl_name = "mybeautifulacl"
+  region = "us-west-2"
+  resource_arn = module.alb.lb_arn
+
+  managed_rule_groups = {
+    "CommonRules" = {
+      action = "block"
+      priority = 20
+
+      statement = {
+        name = "AWSManagedRulesCommonRuleSet"
+      }
+    }
+  }
 }

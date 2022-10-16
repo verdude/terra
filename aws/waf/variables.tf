@@ -13,11 +13,6 @@ variable "resource_arn" {
   description = "arn of the target lb or other supported resource"
 }
 
-variable "target_id" {
-  type = string
-  description = "resource_arn resource id"
-}
-
 variable "managed_rule_groups" {
   description = "List of managed rule groups with settings"
   type = map(object({

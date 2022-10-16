@@ -42,8 +42,6 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     cloudwatch_metrics_enabled = false
     sampled_requests_enabled = false
   }
-
-  depends_on = [var.target_id]
 }
 
 resource "aws_wafv2_web_acl_association" "example" {

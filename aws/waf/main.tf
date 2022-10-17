@@ -1,3 +1,14 @@
+locals = {
+  acl_associations = distinct(flatten([
+    for acl in aws_wafv2_web_acl.managed_acl : [
+      for resource_arn in var.resource_arns : {
+        acl_arn = acl.arn
+        resource_arn = resource_arn
+      }
+    ]
+  ]))
+}
+
 resource "aws_wafv2_web_acl" "waf_web_acl" {
   for_each = var.managed_rule_groups
   name = "waf_acl"
@@ -44,8 +55,8 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
   }
 }
 
-resource "aws_wafv2_web_acl_association" "example" {
-  for_each = aws_wafv2_web_acl.waf_web_acl
-  resource_arn = var.resource_arn
-  web_acl_arn = each.value.arn
+resource "aws_wafv2_web_acl_association" "associations" {
+  for_each = local.acl_associations
+  resource_arn = each.value.resource_arn
+  web_acl_arn = each.value.acl_arn
 }

@@ -3,14 +3,9 @@ variable "acl_name" {
   description = "Friendly name for the ACL"
 }
 
-variable "region" {
-  type = string
-  description = "The AWS Region"
-}
-
-variable "resource_arn" {
-  type = string
-  description = "arn of the target lb or other supported resource"
+variable "resource_arns" {
+  type = list(string)
+  description = "list of the target lb or other supported resource arns"
 }
 
 variable "managed_rule_groups" {

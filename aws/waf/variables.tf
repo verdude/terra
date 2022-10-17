@@ -3,9 +3,9 @@ variable "acl_name" {
   description = "Friendly name for the ACL"
 }
 
-variable "resource_arns" {
-  type = list(string)
-  description = "list of the target lb or other supported resource arns"
+variable "associated_arns" {
+  type = map(string)
+  description = "List of arns to attach associate with the WAF"
 }
 
 variable "managed_rule_groups" {

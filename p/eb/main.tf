@@ -24,8 +24,9 @@ module "waf" {
   source = "../../aws/waf"
 
   acl_name = "mybeautifulacl"
-  region = "us-west-2"
-  resource_arn = module.eb.load_balancer_arns[0]
+  associated_arns = {
+    main = module.eb.load_balancers[0]
+  }
 
   managed_rule_groups = {
     "CommonRules" = {
@@ -37,4 +38,6 @@ module "waf" {
       }
     }
   }
+
+  depends_on = [module.eb]
 }

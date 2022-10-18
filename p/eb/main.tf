@@ -38,6 +38,4 @@ module "waf" {
       }
     }
   }
-
-  depends_on = [module.eb]
 }

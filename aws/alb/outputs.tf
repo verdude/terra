@@ -9,3 +9,7 @@ output "lb_arn" {
 output "lb_id" {
   value = aws_lb.public_alb.id
 }
+
+output "lb_zone_id" {
+  value = aws_lb.public_alb.zone_id
+}

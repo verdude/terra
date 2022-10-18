@@ -18,6 +18,11 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "IamInstanceProfile"
     value     =  var.iam_role_name
   }
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     =  false
+  }
 
   setting {
     namespace = "aws:ec2:vpc"

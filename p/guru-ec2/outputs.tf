@@ -13,7 +13,3 @@ output "ec2_state" {
 output "ec2_arn" {
   value = module.ec2.arn
 }
-
-output "alb_dns" {
-  value = module.alb.lb_dns_name
-}

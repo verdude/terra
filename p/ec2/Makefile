@@ -6,7 +6,7 @@ override init := terraform
 endif
 
 .PHONY: all
-apply:
+all:
 	$(init) init
 	terraform apply
 ifdef config

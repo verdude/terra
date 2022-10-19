@@ -8,7 +8,7 @@ endif
 .PHONY: all
 apply:
 	$(init) init
-	terraform apply
+	terraform apply --auto-approve
 ifdef config
 	$(MAKE) config_ssh
 endif

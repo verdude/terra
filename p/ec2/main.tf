@@ -26,6 +26,7 @@ module "sec_groups" {
 
 module "keys" {
   source = "../../aws/keys"
+  key_name = uuid()
 }
 
 module "ec2" {

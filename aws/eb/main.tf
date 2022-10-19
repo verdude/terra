@@ -1,10 +1,6 @@
-resource "aws_elastic_beanstalk_application" "elasticapp" {
-  name = var.elasticapp
-}
-
 resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   name                = var.beanstalkappenv
-  application         = aws_elastic_beanstalk_application.elasticapp.name
+  application         = var.elasticapp
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
@@ -23,7 +19,7 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = false
+    value     = true
   }
 
   setting {

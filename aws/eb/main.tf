@@ -13,15 +13,17 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "VPCId"
     value     = var.vpc_id
   }
+
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     =  var.iam_role_name
   }
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = true
+    value     = false
   }
 
   setting {
@@ -29,36 +31,43 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "Subnets"
     value     = join(",", var.public_subnets)
   }
+
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "MatcherHTTPCode"
     value     = "200"
   }
+
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
     value     = "application"
   }
+
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
     value     = "t3.medium"
   }
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBScheme"
     value     = "internet facing"
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = 1
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = 2
   }
+
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "SystemType"

@@ -1,3 +1,7 @@
+data "aws_instance" "eb_instance" {
+  instance_id = module.eb.instances[0]
+}
+
 module "vpc" {
   source = "../../aws/vpc/main"
 }

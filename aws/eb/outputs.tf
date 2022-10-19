@@ -5,3 +5,7 @@ output "load_balancers" {
 output "id" {
   value = aws_elastic_beanstalk_environment.beanstalkappenv.id
 }
+
+output "instances" {
+  value = aws_elastic_beanstalk_environment.beanstalkappenv.instances
+}

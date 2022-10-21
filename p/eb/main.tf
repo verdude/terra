@@ -32,53 +32,9 @@ module "eb" {
   ec2_key_name = module.key.key_name
 }
 
-module "eb2" {
-  source = "../../aws/eb"
-
-  vpc_id = module.vpc.vpc_id
-  public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  elb_public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  tier = "WebServer"
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.0 running Docker"
-  elasticapp = aws_elastic_beanstalk_application.wowee.name
-  beanstalkappenv = "production"
-  iam_role_name = aws_iam_instance_profile.test_profile.name
-  ec2_key_name = module.key.key_name
-}
-
-module "eb3" {
-  source = "../../aws/eb"
-
-  vpc_id = module.vpc.vpc_id
-  public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  elb_public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  tier = "WebServer"
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.0 running Docker"
-  elasticapp = aws_elastic_beanstalk_application.cool.name
-  beanstalkappenv = "staging"
-  iam_role_name = aws_iam_instance_profile.test_profile.name
-  ec2_key_name = module.key.key_name
-}
-
-module "eb4" {
-  source = "../../aws/eb"
-
-  vpc_id = module.vpc.vpc_id
-  public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  elb_public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  tier = "WebServer"
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.0 running Docker"
-  elasticapp = aws_elastic_beanstalk_application.cool.name
-  beanstalkappenv = "paging"
-  iam_role_name = aws_iam_instance_profile.test_profile.name
-  ec2_key_name = module.key.key_name
-}
-
 locals {
   waf_enabled_services = {
     main = module.eb,
-    paging = module.eb4
-    thirdary = module.eb3
   }
 }
 
@@ -86,8 +42,7 @@ module "waf" {
   source = "../../aws/waf"
 
   acl_name = "mybeautifulacl"
-  associated_arns = {for name, service in local.waf_enabled_services :
-    name => service.load_balancers[0]}
+  associated_arns = { for name, service in local.waf_enabled_services : name => service.load_balancers[0] }
 
   managed_rule_groups = {
     "CommonRules" = {

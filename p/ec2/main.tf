@@ -38,5 +38,5 @@ module "ec2" {
   ami = data.aws_ami.ubuntu.id
   subnet_id = module.vpc.p_subnet_id
   igw = module.vpc.igw
-  size = "t3.micro"
+  size = "t2.nano"
 }

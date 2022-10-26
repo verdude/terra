@@ -36,7 +36,7 @@ module "eb" {
   deployment_policy = "Rolling"
   rolling_update_type = "Health"
   rolling-update-max-batch-size = 2
-  rolling-update-min-instances = 1
+  rolling-update-min-instances = 2
 }
 
 locals {

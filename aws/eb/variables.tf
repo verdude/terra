@@ -11,9 +11,20 @@ variable "tier" {
   type = string
 }
 
-variable "vpc_id" {}
-variable "public_subnets" {}
-variable "elb_public_subnets" {}
+variable "vpc_id" {
+  type = string
+  description = "vpc id"
+}
+
+variable "public_subnets" {
+  type = list(string)
+  description = "public subnets for the EC2"
+}
+
+variable "elb_public_subnets" {
+  type = list(string)
+  description = "Subnets for the ALB"
+}
 
 variable "iam_role_name" {
   type = string

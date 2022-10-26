@@ -32,11 +32,11 @@ module "eb" {
   iam_role_name = aws_iam_instance_profile.test_profile.name
   ec2_key_name = module.key.key_name
 
-  deregistration_delay = 600
-  deployment_policy = "Rolling"
+  deregistration_delay = 601
+  deployment_policy = "Immutable"
   rolling_update_type = "Health"
   rolling-update-max-batch-size = 2
-  rolling-update-min-instances = 2
+  rolling-update-min-instances = 1
 }
 
 locals {

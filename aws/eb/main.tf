@@ -100,21 +100,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value = var.rolling-update-max-batch-size
   }
 
-  setting {
-    namespace = "aws:elb:policies"
-    name = "ConnectionDrainingEnabled"
-    value = var.lb-connection-draining
-  }
-
-  dynamic "setting" {
-    for_each = var.lb-connection-draining ? [1] : []
-    content {
-      namespace = "aws:elb:policies"
-      name = "ConnectionDrainingTimeout"
-      value = var.lb-connection-draining-timeout
-    }
-  }
-
   # =================================
 
   setting {

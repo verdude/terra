@@ -53,9 +53,8 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   }
 
   # =================================
-
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:process_name"
+    namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "DeregistrationDelay"
     value     = var.deregistration_delay
   }

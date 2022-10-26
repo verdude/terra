@@ -73,16 +73,19 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = var.deployment_policy
   }
 
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "RollingUpdateType"
-    value     = var.rolling_update_type
+  dynamic "setting" {
+    for_each = var.deployment_policy == "Rolling" ? [1] : []
+    content {
+      namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+      name      = "RollingUpdateType"
+      value     = var.rolling_update_type
+    }
   }
 
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
     name = "RollingUpdateEnabled"
-    value = true
+    value = var.deployment_policy == "Rolling"
   }
 
   setting {
@@ -95,6 +98,21 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
     name = "MaxBatchSize"
     value = var.rolling-update-max-batch-size
+  }
+
+  setting {
+    namespace = "aws:elb:policies"
+    name = "ConnectionDrainingEnabled"
+    value = var.lb-connection-draining
+  }
+
+  dynamic "setting" {
+    for_each = var.lb-connection-draining ? [1] : []
+    content {
+      namespace = "aws:elb:policies"
+      name = "ConnectionDrainingTimeout"
+      value = var.lb-connection-draining-timeout
+    }
   }
 
   # =================================

@@ -37,6 +37,18 @@ variable "ec2_key_name" {
   default = ""
 }
 
+variable "lb-connection-draining" {
+  type = bool
+  description = "Whether to allow connections to persist after the deregistration."
+  default = false
+}
+
+variable "lb-connection-draining-timeout" {
+  type = number
+  description = "The longest a request can last after deregistration."
+  default = 20
+}
+
 variable "deregistration_delay" {
   type        = number
   description = "Amount of time, in seconds, to wait for active requests to complete before deregistering. Used in combination with Application Load Balancer."
@@ -51,7 +63,7 @@ variable "deployment_policy" {
 
 variable "rolling_update_type" {
   type        = string
-  description = "Disabled, Rolling based on Time, Rolling based on Health, Immutable etc."
+  description = "Health | Time | Immutable. Immutable is safest."
   default     = "Immutable"
 }
 

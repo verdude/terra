@@ -8,7 +8,7 @@ module "vpc" {
 
 module "key" {
   source = "../../aws/keys"
-  key_name = "wow-incredible"
+  key_name = "wowincredible"
 }
 
 resource "aws_elastic_beanstalk_application" "wowee" {
@@ -31,11 +31,17 @@ module "eb" {
   beanstalkappenv = "production"
   iam_role_name = aws_iam_instance_profile.test_profile.name
   ec2_key_name = module.key.key_name
+
+  deregistration_delay = 600
+  deployment_policy = "Rolling"
+  rolling_update_type = "Health"
+  rolling-update-max-batch-size = 2
+  rolling-update-min-instances = 1
 }
 
 locals {
   waf_enabled_services = {
-    main = module.eb,
+    #main = module.eb,
   }
 }
 

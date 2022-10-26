@@ -43,3 +43,15 @@ variable "rolling_update_type" {
   description = "Disabled, Rolling based on Time, Rolling based on Health, Immutable etc."
   default     = "Immutable"
 }
+
+variable "rolling-update-min-instances" {
+  type        = string
+  description = "Disabled, Rolling based on Time, Rolling based on Health, Immutable etc."
+  default     = 1
+}
+
+variable "rolling-update-max-batch-size" {
+  type        = string
+  description = "Max Batch size for rolling updates"
+  default     = 1
+}

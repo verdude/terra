@@ -10,6 +10,13 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = var.vpc_id
   }
 
+  # CLOUDWATCH
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = true
+  }
+
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
@@ -53,6 +60,7 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   }
 
   # =================================
+
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "DeregistrationDelay"
@@ -71,6 +79,24 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = var.rolling_update_type
   }
 
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name = "RollingUpdateEnabled"
+    value = true
+  }
+
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name = "MinInstancesInService"
+    value = var.rolling-update-min-instances
+  }
+
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name = "MaxBatchSize"
+    value = var.rolling-update-max-batch-size
+  }
+
   # =================================
 
   setting {
@@ -86,5 +112,59 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
       name      = "EC2KeyName"
       value     = var.ec2_key_name
     }
+  }
+
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = 1
+  }
+
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = 10
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "MeasureName"
+    value     = "RequestCount"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Statistic"
+    value     = "Sum"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Unit"
+    value     = "Count"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "LowerThreshold"
+    value     = "10"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "UpperThreshold"
+    value     = "30"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "LowerBreachScaleIncrement"
+    value     = "-1"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "UpperBreachScaleIncrement"
+    value     = "1"
   }
 }

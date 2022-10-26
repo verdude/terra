@@ -8,6 +8,7 @@ module "vpc" {
 
 module "key" {
   source = "../../aws/keys"
+  key_name = "wow-incredible"
 }
 
 resource "aws_elastic_beanstalk_application" "wowee" {
@@ -42,7 +43,10 @@ module "waf" {
   source = "../../aws/waf"
 
   acl_name = "mybeautifulacl"
-  associated_arns = { for name, service in local.waf_enabled_services : name => service.load_balancers[0] }
+  associated_arns = {
+    for name, service in local.waf_enabled_services :
+    name => service.load_balancers[0]
+  }
 
   managed_rule_groups = {
     "CommonRules" = {

@@ -25,3 +25,21 @@ variable "ec2_key_name" {
 
   default = ""
 }
+
+variable "deregistration_delay" {
+  type        = number
+  description = "Amount of time, in seconds, to wait for active requests to complete before deregistering. Used in combination with Application Load Balancer."
+  default     = 20
+}
+
+variable "deployment_policy" {
+  type        = string
+  description = "Rolling, Immutable, Traffic Splitting etc."
+  default     = "Rolling"
+}
+
+variable "rolling_update_type" {
+  type        = string
+  description = "Disabled, Rolling based on Time, Rolling based on Health, Immutable etc."
+  default     = "Immutable"
+}

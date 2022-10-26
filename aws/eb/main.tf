@@ -52,17 +52,27 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = "internet facing"
   }
 
+  # =================================
+
   setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MinSize"
-    value     = 1
+    namespace = "aws:elasticbeanstalk:environment:process:process_name"
+    name      = "DeregistrationDelay"
+    value     = var.deregistration_delay
   }
 
   setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MaxSize"
-    value     = 2
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "DeploymentPolicy"
+    value     = var.deployment_policy
   }
+
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "RollingUpdateType"
+    value     = var.rolling_update_type
+  }
+
+  # =================================
 
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"

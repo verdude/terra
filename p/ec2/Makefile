@@ -14,8 +14,8 @@ ifdef config
 endif
 
 .PHONY: config_ssh
-config_ssh:
-	bash scripts/config_ssh.sh -w
+config-ssh:
+	bash config_ssh.sh -w
 
 .PHONY: kill
 kill:

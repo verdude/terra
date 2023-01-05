@@ -1,5 +1,6 @@
 config := yea
 init := echo
+username :=
 
 ifneq ($(init),echo)
 override init := terraform
@@ -10,12 +11,18 @@ apply:
 	$(init) init
 	terraform apply --auto-approve
 ifdef config
-	$(MAKE) config_ssh
+	$(MAKE) config-ssh
 endif
 
-.PHONY: config_ssh
-config_ssh:
+.PHONY: config-ssh
+config-ssh:
 	expect scripts/expect.exp
+
+.PHONY: config-server
+config-server:
+ifdef username
+	ssh gurub 'git clone --depth 1 https://github.com/verdude/random && random/setup.sh -zebg sudo -u $(username)'
+endif
 
 .PHONY: kill
 kill:

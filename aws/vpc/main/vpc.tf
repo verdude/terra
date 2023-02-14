@@ -2,14 +2,14 @@ variable "az" {
   description = "availability zone for the subnet"
   type = string
 
-  default = "us-west-2a"
+  default = "us-east-1a"
 }
 
 variable "az2" {
   description = "availability zone for the subnet"
   type = string
 
-  default = "us-west-2b"
+  default = "us-east-1b"
 }
 
 resource "aws_vpc" "main" {

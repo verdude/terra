@@ -20,7 +20,7 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     =  var.iam_role_name
+    value     = var.iam_role_name
   }
 
   setting {
@@ -84,20 +84,20 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
 
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name = "RollingUpdateEnabled"
-    value = var.deployment_policy == "Rolling"
+    name      = "RollingUpdateEnabled"
+    value     = var.deployment_policy == "Rolling"
   }
 
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name = "MinInstancesInService"
-    value = var.rolling-update-min-instances
+    name      = "MinInstancesInService"
+    value     = var.rolling-update-min-instances
   }
 
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name = "MaxBatchSize"
-    value = var.rolling-update-max-batch-size
+    name      = "MaxBatchSize"
+    value     = var.rolling-update-max-batch-size
   }
 
   # =================================

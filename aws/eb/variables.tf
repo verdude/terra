@@ -12,17 +12,17 @@ variable "tier" {
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "vpc id"
 }
 
 variable "public_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "public subnets for the EC2"
 }
 
 variable "elb_public_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "Subnets for the ALB"
 }
 
@@ -31,7 +31,7 @@ variable "iam_role_name" {
 }
 
 variable "ec2_key_name" {
-  type = string
+  type        = string
   description = "name of the key to add to the ec2"
 
   default = ""

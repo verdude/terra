@@ -1,41 +1,41 @@
 variable "sec_groups" {
   description = "security groups"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "subnets" {
   description = "subnets"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "name" {
   description = "friendly name"
-  type = string
+  type        = string
 }
 
 variable "protected" {
-  type = bool
+  type        = bool
   description = "Determines whether deletion protection is enabled"
 
   default = false
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "Vpc id for target group"
 }
 
 variable "instance_id" {
   description = "ec2 id"
-  type = string
+  type        = string
 }
 
 variable "port" {
   description = "port on which the alb will run"
-  type = number
+  type        = number
 }
 
 variable "target_port" {
   description = "port for service running on ec2"
-  type = number
+  type        = number
 }

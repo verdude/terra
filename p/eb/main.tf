@@ -7,7 +7,7 @@ module "vpc" {
 }
 
 module "key" {
-  source = "../../aws/keys"
+  source   = "../../aws/keys"
   key_name = "wowincredible"
 }
 
@@ -22,21 +22,21 @@ resource "aws_elastic_beanstalk_application" "cool" {
 module "eb" {
   source = "../../aws/eb"
 
-  vpc_id = module.vpc.vpc_id
-  public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  elb_public_subnets = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  tier = "WebServer"
+  vpc_id              = module.vpc.vpc_id
+  public_subnets      = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
+  elb_public_subnets  = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
+  tier                = "WebServer"
   solution_stack_name = "64bit Amazon Linux 2 v3.5.0 running Docker"
-  elasticapp = aws_elastic_beanstalk_application.wowee.name
-  beanstalkappenv = "production"
-  iam_role_name = aws_iam_instance_profile.test_profile.name
-  ec2_key_name = module.key.key_name
+  elasticapp          = aws_elastic_beanstalk_application.wowee.name
+  beanstalkappenv     = "production"
+  iam_role_name       = aws_iam_instance_profile.test_profile.name
+  ec2_key_name        = module.key.key_name
 
-  deployment_policy = "Rolling"
-  rolling_update_type = "Immutable"
+  deployment_policy             = "Rolling"
+  rolling_update_type           = "Immutable"
   rolling-update-max-batch-size = 2
-  rolling-update-min-instances = 1
-  deregistration_delay = 120
+  rolling-update-min-instances  = 1
+  deregistration_delay          = 120
 }
 
 locals {
@@ -56,7 +56,7 @@ module "waf" {
 
   managed_rule_groups = {
     "CommonRules" = {
-      action = "block"
+      action   = "block"
       priority = 20
 
       statement = {

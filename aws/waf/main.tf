@@ -1,5 +1,5 @@
 resource "aws_wafv2_web_acl" "managed_acl" {
-  name = "managed_waf_acl"
+  name  = "managed_waf_acl"
   scope = "REGIONAL"
 
   default_action {
@@ -9,7 +9,7 @@ resource "aws_wafv2_web_acl" "managed_acl" {
   dynamic "rule" {
     for_each = var.managed_rule_groups
     content {
-      name = rule.key
+      name     = rule.key
       priority = rule.value["priority"]
 
       override_action {
@@ -19,7 +19,7 @@ resource "aws_wafv2_web_acl" "managed_acl" {
 
       statement {
         managed_rule_group_statement {
-          name = rule.value["statement"]["name"]
+          name        = rule.value["statement"]["name"]
           vendor_name = rule.value["statement"]["vendor_name"]
 
           dynamic "excluded_rule" {
@@ -32,17 +32,17 @@ resource "aws_wafv2_web_acl" "managed_acl" {
       }
 
       visibility_config {
-        metric_name = "default-${rule.key}"
+        metric_name                = "default-${rule.key}"
         cloudwatch_metrics_enabled = false
-        sampled_requests_enabled = false
+        sampled_requests_enabled   = false
       }
     }
   }
 
   visibility_config {
-    metric_name = "default"
+    metric_name                = "default"
     cloudwatch_metrics_enabled = false
-    sampled_requests_enabled = false
+    sampled_requests_enabled   = false
   }
 }
 
@@ -50,5 +50,5 @@ resource "aws_wafv2_web_acl_association" "associations" {
   for_each = var.associated_arns
 
   resource_arn = each.value
-  web_acl_arn = aws_wafv2_web_acl.managed_acl.arn
+  web_acl_arn  = aws_wafv2_web_acl.managed_acl.arn
 }

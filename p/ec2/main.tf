@@ -25,7 +25,7 @@ module "sec_groups" {
 }
 
 module "keys" {
-  source = "../../aws/keys"
+  source   = "../../aws/keys"
   key_name = uuid()
 }
 
@@ -33,10 +33,10 @@ module "ec2" {
   source = "../../aws/ec2"
 
   vpc_sec_gids = module.sec_groups.sec_group_ids
-  vpc_id = module.vpc.vpc_id
-  key_name = module.keys.key_name
-  ami = data.aws_ami.ubuntu.id
-  subnet_id = module.vpc.p_subnet_id
-  igw = module.vpc.igw
-  size = "t2.nano"
+  vpc_id       = module.vpc.vpc_id
+  key_name     = module.keys.key_name
+  ami          = data.aws_ami.ubuntu.id
+  subnet_id    = module.vpc.p_subnet_id
+  igw          = module.vpc.igw
+  size         = "t2.nano"
 }

@@ -1,13 +1,13 @@
 variable "az" {
   description = "availability zone for the subnet"
-  type = string
+  type        = string
 
   default = "us-east-1a"
 }
 
 variable "az2" {
   description = "availability zone for the subnet"
-  type = string
+  type        = string
 
   default = "us-east-1b"
 }
@@ -20,8 +20,8 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
   availability_zone = var.az
 
   tags = {
@@ -30,8 +30,8 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "public2" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.2.0/24"
   availability_zone = var.az2
 
   tags = {
@@ -40,7 +40,7 @@ resource "aws_subnet" "public2" {
 }
 
 resource "aws_subnet" "private" {
-  vpc_id = aws_vpc.main.id
+  vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.3.0/24"
 
   tags = {
@@ -70,7 +70,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_main_route_table_association" "main_route_assoc" {
-  vpc_id = aws_vpc.main.id
+  vpc_id         = aws_vpc.main.id
   route_table_id = aws_route_table.public.id
 }
 

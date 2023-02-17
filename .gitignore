@@ -6,3 +6,4 @@
 assets/
 build/
 terraform.tfstate*
+*.txt

@@ -10,6 +10,24 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = var.vpc_id
   }
 
+  setting {
+    namespace = "aws:ec2:vpc"
+    name = "ELBScheme"
+    value = "internal"
+  }
+
+  # Security groups
+  dynamic "setting" {
+    // Does not add SG if not provided
+    for_each = var.security_groups
+
+    content {
+      namespace = "aws:autoscaling:launchconfiguration"
+      name      = "SecurityGroups"
+      value     = setting.value
+    }
+  }
+
   # CLOUDWATCH
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
@@ -51,12 +69,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
     value     = "t3.medium"
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = "internet facing"
   }
 
   # =================================

@@ -16,6 +16,11 @@ variable "vpc_id" {
   description = "vpc id"
 }
 
+variable "sec_groups" {
+  type        = list(string)
+  description = "sec groups"
+}
+
 variable "public_subnets" {
   type        = list(string)
   description = "public subnets for the EC2"

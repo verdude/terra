@@ -4,18 +4,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = var.vpc_id
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name = "ELBScheme"
-    value = "internal"
-  }
-
   # Security groups
   dynamic "setting" {
     // Does not add SG if not provided
@@ -39,18 +27,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     = var.iam_role_name
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "AssociatePublicIpAddress"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "Subnets"
-    value     = join(",", var.public_subnets)
   }
 
   setting {

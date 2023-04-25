@@ -4,12 +4,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = var.vpc_id
-  }
-
   dynamic "setting" {
     for_each = var.sec_groups
 
@@ -20,28 +14,47 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     }
   }
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = "internal"
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "Subnets"
+      value     = join(",", var.internal_elb.subnets)
+    }
   }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBSubnets"
+      value     = join(",", var.internal_elb.elb_subnets)
+    }
+  }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "VPCId"
+      value     = var.internal_elb.vpc_id
+    }
+  }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBScheme"
+      value     = "internal"
+    }
+  }
+
 
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
     value     = true
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBSubnets"
-    value     = join(",", var.elb_subnets)
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "Subnets"
-    value     = join(",", var.subnets)
   }
 
   setting {
@@ -71,7 +84,7 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
-    value     = "t3.medium"
+    value     = "t2.medium"
   }
 
   setting {

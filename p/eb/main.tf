@@ -79,10 +79,9 @@ module "eb" {
   beanstalkappenv     = "production"
   iam_role_name       = aws_iam_instance_profile.test_profile.name
   ec2_key_name        = module.key.key_name
-  sec_groups          = concat(module.sec_groups.sec_group_ids, module.priv_sec_groups.sec_group_ids)
+  sec_groups          = module.priv_sec_groups.sec_group_ids
 
-  deployment_policy             = "Rolling"
-  rolling_update_type           = "Immutable"
+  deployment_policy             = "AllAtOnce"
   rolling-update-max-batch-size = 2
   rolling-update-min-instances  = 1
   deregistration_delay          = 120

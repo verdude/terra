@@ -101,6 +101,15 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = var.deployment_policy == "Rolling"
   }
 
+  dynamic "setting" {
+    for_each = var.rolling_update_type == "Time" ? [1] : []
+    content {
+      namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+      name      = "PauseTime"
+      value     = var.pause_time
+    }
+  }
+
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
     name      = "MinInstancesInService"
@@ -183,4 +192,9 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "UpperBreachScaleIncrement"
     value     = "1"
   }
+}
+
+data "aws_lb_listener" "http_listener" {
+  load_balancer_arn = aws_elastic_beanstalk_environment.beanstalkappenv.load_balancers[0]
+  port              = 80
 }

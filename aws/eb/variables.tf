@@ -60,7 +60,13 @@ variable "deployment_policy" {
 variable "rolling_update_type" {
   type        = string
   description = "Health | Time | Immutable. Immutable is safest."
-  default     = "Immutable"
+  default     = "Health"
+}
+
+variable "pause_time" {
+  type = string
+  description = "Pause time between batches"
+  default = "PT3S"
 }
 
 variable "rolling-update-min-instances" {

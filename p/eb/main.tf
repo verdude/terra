@@ -81,10 +81,12 @@ module "eb" {
   ec2_key_name        = module.key.key_name
   sec_groups          = module.priv_sec_groups.sec_group_ids
 
-  deployment_policy             = "AllAtOnce"
+  deployment_policy             = "Rolling"
+  rolling_update_type           = "Time"
+  pause_time                    = "PT0S"
   rolling-update-max-batch-size = 2
   rolling-update-min-instances  = 1
-  deregistration_delay          = 120
+  deregistration_delay          = 10
 
   depends_on = [module.sec_groups]
 }

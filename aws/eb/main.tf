@@ -4,10 +4,14 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
-  # Security groups
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = var.vpc_id
+  }
+
   dynamic "setting" {
-    // Does not add SG if not provided
-    for_each = var.security_groups
+    for_each = var.sec_groups
 
     content {
       namespace = "aws:autoscaling:launchconfiguration"
@@ -16,7 +20,30 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     }
   }
 
-  # CLOUDWATCH
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = "public"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = join(",", var.elb_subnets)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = join(",", var.subnets)
+  }
+
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "StreamLogs"
@@ -46,8 +73,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "InstanceType"
     value     = "t3.medium"
   }
-
-  # =================================
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"

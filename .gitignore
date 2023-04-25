@@ -7,3 +7,7 @@ assets/
 build/
 terraform.tfstate*
 *.txt
+/dist/
+.pids/
+.pants.d/
+.elasticbeanstalk/

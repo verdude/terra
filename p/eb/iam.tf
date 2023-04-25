@@ -1,5 +1,20 @@
+resource "random_pet" "role-name" {
+  length    = 2
+  separator = "-"
+}
+
+resource "random_pet" "policy-name" {
+  length    = 2
+  separator = "-"
+}
+
+resource "random_pet" "profile-name" {
+  length    = 2
+  separator = "-"
+}
+
 resource "aws_iam_role" "role" {
-  name = "test-role"
+  name = random_pet.role-name.id
 
   assume_role_policy = <<EOF
 {
@@ -20,7 +35,7 @@ EOF
 
 # AWSElasticBeanstalkWebTier
 resource "aws_iam_policy" "policy" {
-  name        = "test-policy"
+  name        = random_pet.policy-name.id
   description = "A test policy"
 
   policy = <<EOF
@@ -87,6 +102,6 @@ resource "aws_iam_role_policy_attachment" "test-attach" {
 }
 
 resource "aws_iam_instance_profile" "test_profile" {
-  name = "test_profile"
+  name = random_pet.profile-name.id
   role = aws_iam_role.role.name
 }

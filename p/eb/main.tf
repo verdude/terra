@@ -72,18 +72,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-module "ec2" {
-  source = "../../aws/ec2"
-
-  vpc_sec_gids = module.sec_groups.sec_group_ids
-  vpc_id       = data.aws_vpc.default.id
-  key_name     = module.key.key_name
-  ami          = data.aws_ami.ubuntu.id
-  subnet_id    = data.aws_subnets.default.ids[0]
-  igw          = data.aws_internet_gateway.default.id
-  size         = "t2.medium"
-}
-
 module "eb" {
   source = "../../aws/eb"
 
@@ -94,14 +82,14 @@ module "eb" {
   }
 
   tier                = "WebServer"
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.6 running Docker"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.1.0 running Docker"
   elasticapp          = aws_elastic_beanstalk_application.wowee.name
   beanstalkappenv     = "production"
   iam_role_name       = aws_iam_instance_profile.test_profile.name
   ec2_key_name        = module.key.key_name
   sec_groups          = module.priv_sec_groups.sec_group_ids
 
-  deployment_policy             = "RollingWithExtraBatch"
+  deployment_policy             = "AllAtOnce"
   rolling_update_type           = "Time"
   pause_time                    = "PT0S"
   rolling-update-max-batch-size = 2

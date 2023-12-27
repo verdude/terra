@@ -1,5 +1,7 @@
 config := yea
 init := echo
+pdir := $(shell pwd)
+approve := -auto-approve
 
 ifneq ($(init),echo)
 override init := terraform
@@ -8,16 +10,16 @@ endif
 .PHONY: all
 all:
 	$(init) init
-	terraform apply
+	terraform apply $(approve)
 ifdef config
-	$(MAKE) config_ssh
+	$(MAKE) config-ssh
 endif
 
-.PHONY: config_ssh
+.PHONY: config-ssh
 config-ssh:
-	bash config_ssh.sh -w
+	cd ../../ && expect scripts/expect.exp $(pdir) please-wait
 
 .PHONY: kill
 kill:
-	terraform destroy
+	terraform destroy -auto-approve
 	rm -f terraform*

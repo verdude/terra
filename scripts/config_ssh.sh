@@ -25,6 +25,11 @@ done
 cd $scriptpath
 ip=$(terraform output -json | jq .ec2_public_ip.value | tr -d '"')
 
+if [[ $ip == "null" ]]; then
+  echo "Null ip"
+  exit 1
+fi
+
 sed -Eri $darlose "
 /${pattern}/ {
   N
@@ -37,4 +42,7 @@ if [[ -n "$_wait" ]]; then
   sleep 10
 fi
 
-ls -1 ~/.ssh/*.pub | xargs -I{} ssh-copy-id -fi {} ${username:-ubuntu}@$ip
+pk=(~/.ssh/*.pub)
+for k in "${pk[@]}"; do
+  ssh-copy-id -fi "${k}" "${username:-admin}@$ip"
+done

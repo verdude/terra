@@ -12,10 +12,6 @@ apply:
 lambda:
 	$(MAKE) -C p/$(p) apply p=$(p)
 
-.PHONY: clean
-clean:
-	rm -f terraform*
-
 .PHONY: kill
 kill:
 	$(MAKE) -C p/$(p) kill p=$(p)

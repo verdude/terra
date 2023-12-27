@@ -17,6 +17,9 @@ data "aws_ami" "debian" {
 // resources
 module "vpc" {
   source = "../../aws/vpc/main"
+
+  az = "us-west-2a"
+  az2 = "us-west-2b"
 }
 
 module "sec_groups" {
@@ -38,5 +41,5 @@ module "ec2" {
   ami          = data.aws_ami.debian.id
   subnet_id    = module.vpc.p_subnet_id
   igw          = module.vpc.igw
-  size         = "t3a.xlarge"
+  size         = "t3.nano"
 }

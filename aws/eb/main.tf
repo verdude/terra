@@ -4,13 +4,59 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = var.vpc_id
+  dynamic "setting" {
+    for_each = var.sec_groups
+
+    content {
+      namespace = "aws:autoscaling:launchconfiguration"
+      name      = "SecurityGroups"
+      value     = setting.value
+    }
   }
 
-  # CLOUDWATCH
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "Subnets"
+      value     = join(",", var.internal_elb.subnets)
+    }
+  }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBSubnets"
+      value     = join(",", var.internal_elb.elb_subnets)
+    }
+  }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "VPCId"
+      value     = var.internal_elb.vpc_id
+    }
+  }
+
+  dynamic "setting" {
+    for_each = var.internal_elb != null ? [1] : []
+    content {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBScheme"
+      value     = "internal"
+    }
+  }
+
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = true
+  }
+
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "StreamLogs"
@@ -21,18 +67,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     = var.iam_role_name
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "AssociatePublicIpAddress"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "Subnets"
-    value     = join(",", var.public_subnets)
   }
 
   setting {
@@ -50,16 +84,8 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
-    value     = "t3.medium"
+    value     = "t2.medium"
   }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = "internet facing"
-  }
-
-  # =================================
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
@@ -86,6 +112,15 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
     name      = "RollingUpdateEnabled"
     value     = var.deployment_policy == "Rolling"
+  }
+
+  dynamic "setting" {
+    for_each = var.rolling_update_type == "Time" ? [1] : []
+    content {
+      namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+      name      = "PauseTime"
+      value     = var.pause_time
+    }
   }
 
   setting {
@@ -170,4 +205,9 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     name      = "UpperBreachScaleIncrement"
     value     = "1"
   }
+}
+
+data "aws_lb_listener" "http_listener" {
+  load_balancer_arn = aws_elastic_beanstalk_environment.beanstalkappenv.load_balancers[0]
+  port              = 80
 }

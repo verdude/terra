@@ -1,0 +1,32 @@
+[GLOBAL]
+pants_version = "2.15.0"
+pants_distdir = "app/dist/"
+backend_packages = [
+  "pants.backend.python",
+  "pants.backend.python.lint.black",
+  "pants.backend.python.lint.isort",
+  "pants.backend.python.lint.pyupgrade",
+  "pants.backend.python.lint.autoflake",
+]
+pants_ignore = [
+  "thechosenones/",
+  "__pycache__",
+  ".*/",
+  "*.tf",
+]
+
+[python]
+interpreter_constraints = ["CPython==3.11.*"]
+enable_resolves = true
+
+[python.resolves]
+python-default = "app/py.lock"
+
+[source]
+root_patterns = [
+  "app",
+]
+
+[anonymous-telemetry]
+enabled = true
+repo_id = "c3294860-d428-4133-baf5-638943d641ad"

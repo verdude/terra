@@ -31,6 +31,10 @@ resource "aws_security_group" "allow_all" {
   }
 }
 
+output "sec_groups" {
+  value = [aws_security_group.allow_all]
+}
+
 output "sec_group_ids" {
   value = [aws_security_group.allow_all.id]
 }

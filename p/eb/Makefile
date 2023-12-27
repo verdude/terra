@@ -1,5 +1,5 @@
 all:
-	terraform apply
+	terraform apply -auto-approve
 
 clean:
 	rm -f terraform*

@@ -2,68 +2,101 @@ data "aws_instance" "eb_instance" {
   instance_id = module.eb.instances[0]
 }
 
-module "vpc" {
-  source = "../../aws/vpc/main"
+resource "random_pet" "key-name" {
+  length    = 2
+  separator = "-"
+}
+
+resource "random_pet" "eb-app-name" {
+  length    = 2
+  separator = "-"
+}
+
+data "aws_vpc" "default" {
+  filter {
+    name   = "isDefault"
+    values = ["true"]
+  }
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+data "aws_internet_gateway" "default" {
+  filter {
+    name   = "attachment.vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 module "key" {
   source   = "../../aws/keys"
-  key_name = "wowincredible"
+  key_name = random_pet.key-name.id
 }
 
 resource "aws_elastic_beanstalk_application" "wowee" {
-  name = "wowee"
+  name = random_pet.eb-app-name.id
 }
 
-resource "aws_elastic_beanstalk_application" "cool" {
-  name = "cool"
+module "priv_sec_groups" {
+  source = "../../aws/sec_groups/priv"
+  vpc_id = data.aws_vpc.default.id
+}
+
+module "sec_groups" {
+  source = "../../aws/sec_groups"
+  vpc_id = data.aws_vpc.default.id
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
 module "eb" {
   source = "../../aws/eb"
 
-  vpc_id              = module.vpc.vpc_id
-  public_subnets      = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
-  elb_public_subnets  = [module.vpc.p_subnet_id, module.vpc.p2_subnet_id]
+  internal_elb = {
+    vpc_id      = data.aws_vpc.default.id
+    subnets     = slice(data.aws_subnets.default.ids, 0, 1)
+    elb_subnets = data.aws_subnets.default.ids
+  }
+
   tier                = "WebServer"
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.0 running Docker"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.1.0 running Docker"
   elasticapp          = aws_elastic_beanstalk_application.wowee.name
   beanstalkappenv     = "production"
   iam_role_name       = aws_iam_instance_profile.test_profile.name
   ec2_key_name        = module.key.key_name
+  sec_groups          = module.priv_sec_groups.sec_group_ids
 
-  deployment_policy             = "Rolling"
-  rolling_update_type           = "Immutable"
+  deployment_policy             = "AllAtOnce"
+  rolling_update_type           = "Time"
+  pause_time                    = "PT0S"
   rolling-update-max-batch-size = 2
   rolling-update-min-instances  = 1
-  deregistration_delay          = 120
-}
+  deregistration_delay          = 10
 
-locals {
-  waf_enabled_services = {
-    #main = module.eb,
-  }
-}
-
-module "waf" {
-  source = "../../aws/waf"
-
-  acl_name = "mybeautifulacl"
-  associated_arns = {
-    for name, service in local.waf_enabled_services :
-    name => service.load_balancers[0]
-  }
-
-  managed_rule_groups = {
-    "CommonRules" = {
-      action   = "block"
-      priority = 20
-
-      statement = {
-        name = "AWSManagedRulesCommonRuleSet"
-      }
-    }
-  }
+  depends_on = [module.sec_groups]
 }
 
 output "lb" {

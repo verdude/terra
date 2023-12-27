@@ -23,3 +23,7 @@ config-ssh:
 kill:
 	terraform destroy -auto-approve
 	rm -f terraform*
+
+.PHONY: clean
+clean: kill
+	rm -rf .terraform*

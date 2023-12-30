@@ -2,6 +2,7 @@ config := yea
 init := echo
 pdir := $(shell pwd)
 approve := -auto-approve
+username :=
 
 ifneq ($(init),echo)
 override init := terraform
@@ -18,6 +19,10 @@ endif
 .PHONY: config-ssh
 config-ssh:
 	cd ../../ && expect scripts/expect.exp $(pdir) please-wait
+ifdef username
+	ssh padmin 'git clone --depth 1 https://github.com/verdude/random && random/setup.sh -zebg sudo -u $(username)'
+endif
+
 
 .PHONY: kill
 kill:

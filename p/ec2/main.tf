@@ -1,9 +1,9 @@
-data "aws_ami" "debian" {
+data "aws_ami" "ubuntu" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["debian-12-amd64-20231013-1532"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
   filter {
@@ -11,7 +11,7 @@ data "aws_ami" "debian" {
     values = ["hvm"]
   }
 
-  owners = ["136693071363"]
+  owners = ["099720109477"]
 }
 
 // resources
@@ -38,8 +38,8 @@ module "ec2" {
   vpc_sec_gids = module.sec_groups.sec_group_ids
   vpc_id       = module.vpc.vpc_id
   key_name     = module.keys.key_name
-  ami          = data.aws_ami.debian.id
+  ami          = data.aws_ami.ubuntu.id
   subnet_id    = module.vpc.p_subnet_id
   igw          = module.vpc.igw
-  size         = "t3.nano"
+  size         = "t3a.2xlarge"
 }

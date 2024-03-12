@@ -34,5 +34,5 @@ kill:
 	rm -f terraform*
 
 .PHONY: clean
-clean: kill
+clean:
 	rm -rf .terraform*
